@@ -151,32 +151,41 @@ class Spinnaker():
                     int(cfg_max_wait_for_pipeline_run_mins / 60)))
                 logging.error("Considering it as an error")
                 sys.exit(1)
-            status = self.get_last_build().status
-            if "RUNNING" in status:
+            try:
+                status = self.get_last_build().status
+                if "RUNNING" in status:
+                    time.sleep(10)
+                elif "NOT_STARTED" in status:
+                    logging.info("Pipeline has not yet started.")
+                    time.sleep(10)
+                elif "SUCCEEDED" in status:
+                    logging.info("Congratulations pipeline run was successful.")
+                    print_passed()
+                    self.get_stages(n=cfg_number_of_stages_to_check)
+                    return 0
+                elif "TERMINAL" in status:
+                    logging.error(
+                        "Pipeline stopped with terminal state. screenshot generated.")
+                    print_failed()
+                    sys.exit(1)
+                else:
+                    logging.error("Error: something went wrong {}".format(status))
+                    sys.exit(2)
+            except:
+                print("Unexpected error:", sys.exc_info()[0])
+                print("Retrying anyway")
                 time.sleep(10)
-            elif "NOT_STARTED" in status:
-                logging.info("Pipeline has not yet started.")
-                time.sleep(10)
-            elif "SUCCEEDED" in status:
-                logging.info("Congratulations pipeline run was successful.")
-                print_passed()
-                self.get_stages(n=cfg_number_of_stages_to_check)
-                return 0
-            elif "TERMINAL" in status:
-                logging.error(
-                    "Pipeline stopped with terminal state. screenshot generated.")
-                print_failed()
-                sys.exit(1)
-            else:
-                logging.error("Error: something went wrong {}".format(status))
-                sys.exit(2)
+
 
     def get_last_build(self):
         execution_summary = wait_for_xpath_presence(
             self.driver, cfg_execution_summary_xp)
+        execution_summary_text = execution_summary.text
+
         trigger_details = wait_for_xpath_presence(
             self.driver, cfg_trigger_details_xp)
-        self.build = Build(trigger_details.text, execution_summary.text)
+        trigger_details_text = trigger_details.text
+        self.build = Build(trigger_details_text, execution_summary_text)
         time.sleep(1)
         e = wait_for_xpath_presence(self.driver, cfg_detail_xpath)
         self.driver.save_screenshot(join(
