@@ -171,6 +171,8 @@ class Spinnaker():
                 else:
                     logging.error("Error: something went wrong {}".format(status))
                     sys.exit(2)
+            except SystemExit:
+                raise
             except:
                 print("Unexpected error:", sys.exc_info()[0])
                 print("Retrying anyway")
