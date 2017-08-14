@@ -130,7 +130,7 @@ def get_body_text(driver,
             e = wait_for_xpath_presence(driver, "//*")
             raise StaleElementReferenceException
         return e.get_attribute("outerHTML")
-    return get_body_text(driver)
+    return _get_body_text(driver)
 
 
 # Subbornly clicks on the elements which run away from the DOM
