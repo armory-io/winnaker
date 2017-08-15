@@ -80,3 +80,6 @@ cfg_start_manual_execution_xpath = get_env(
 cfg_force_rebake_xpath = get_env(
     "WINNAKER_XPATH_FORCE_REBAKE",
     "//input[@type='checkbox' and @ng-model='vm.command.trigger.rebake']")
+cfg_oauth_authorize_xpath= get_env(
+    "WINNAKER_XPATH_OAUTH_AUTHORIZE",
+    "//*[@id='js-oauth-authorize-btn']")
