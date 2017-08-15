@@ -34,8 +34,6 @@ cfg_email_from = get_env("WINNAKER_EMAIL_FROM", None)
 cfg_email_to = get_env("WINNAKER_EMAIL_TO", None)
 cfg_hipchat_posturl = get_env('WINNAKER_HIPCHAT_POSTURL', None)
 
-<<<<<<< Updated upstream
-=======
 # Retry settings
 cfg_wait_exponential_multiplier = int(get_env(
     "WINNAKER_WAIT_EXPONENTIAL_MULTIPLIER",
@@ -47,7 +45,6 @@ cfg_retry_stop_max_attempt = int(get_env(
     "WINNAKER_RETRY_STOP_MAX_ATTEMPT",
     10))
 
->>>>>>> Stashed changes
 # ---------------------------------------------
 # Internal Configs
 #
