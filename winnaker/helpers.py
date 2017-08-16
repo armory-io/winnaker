@@ -91,7 +91,7 @@ def wait_for_xpath_presence(driver,
             driver.save_screenshot(
                 join(
                     cfg_output_files_path,
-                    "debug_" +
+                    "debug_" + debug_name + "_" +
                     now() +
                     ".png"))
             a_nice_refresh(driver)

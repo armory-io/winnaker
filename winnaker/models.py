@@ -76,7 +76,7 @@ class Spinnaker():
     def get_application(self, appname):
         self.check_page_contains_error()
         e = wait_for_xpath_presence(
-            self.driver, cfg_applications_xpath, be_clickable=True)
+            self.driver, cfg_applications_xpath, be_clickable=True, debug_name=self.name)
         e.click()
         e = wait_for_xpath_presence(self.driver, cfg_searchbox_xpath)
         e.send_keys(appname)
