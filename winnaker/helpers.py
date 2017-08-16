@@ -62,7 +62,8 @@ def wait_for_xpath_presence(driver,
         be_clickable=False,
         exponential_multiplier=cfg_wait_exponential_multiplier,
         exponential_max=cfg_wait_exponential_max,
-        stop_max_attempt=cfg_retry_stop_max_attempt):
+        stop_max_attempt=cfg_retry_stop_max_attempt,
+        debug_name=""):
     @retry(
         wait_exponential_multiplier=exponential_multiplier,
         wait_exponential_max=exponential_max,
@@ -83,9 +84,7 @@ def wait_for_xpath_presence(driver,
             driver.save_screenshot(
                 join(
                     cfg_output_files_path,
-                    "debug_" +
-                    now() +
-                    ".png"))
+                    "debug_" + debug_name + "_" + now() + ".png"))
             a_nice_refresh(driver)
             raise TimeoutException
         except StaleElementReferenceException:
