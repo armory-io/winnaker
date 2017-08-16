@@ -49,8 +49,10 @@ class Spinnaker():
                 cfg_output_files_path, "authorize.png"))
             e.click()
         except:
-            logging.debug("couldn't find authorize xpath. This is OK if the user has already been authorized, looked for: %s"
+            logging.info("couldn't find authorize xpath. This is OK if the user has already been authorized, looked for: %s"
                 % cfg_oauth_authorize_xpath)
+            self.driver.save_screenshot(join(cfg_output_files_path, "no-authorize.png"))
+        time.sleep(2)
 
     def login(self):
         self.check_page_contains_error()
