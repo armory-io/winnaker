@@ -45,7 +45,7 @@ class Spinnaker():
     def authorize(self):
         logging.debug("Authorizing OAuth Request")
         try:
-            e = wait_for_xpath_presence(self.driver, cfg_oauth_authorize_xpath, stop_max_attempt=2)
+            e = wait_for_xpath_presence(self.driver, cfg_oauth_authorize_xpath, stop_max_attempt=2, screenshot_dir=self.screenshot_dir)
             self.driver.save_screenshot(join(
                 cfg_output_files_path, "authorize.png"))
             e.click()
@@ -57,15 +57,15 @@ class Spinnaker():
 
     def login(self):
         self.check_page_contains_error()
-        e = wait_for_xpath_presence(self.driver, cfg_usernamebox_xpath)
+        e = wait_for_xpath_presence(self.driver, cfg_usernamebox_xpath, screenshot_dir=self.screenshot_dir)
         logging.debug(
             "Logging in as: {}".format(
                 cfg_spinnaker_username))
         e.send_keys(cfg_spinnaker_username)
-        e = wait_for_xpath_presence(self.driver, cfg_passwordbox_xpath)
+        e = wait_for_xpath_presence(self.driver, cfg_passwordbox_xpath, screenshot_dir=self.screenshot_dir)
         self.save_screenshot("login.png")
         e.send_keys(cfg_spinnaker_password)
-        e = wait_for_xpath_presence(self.driver, cfg_signin_button_xpath)
+        e = wait_for_xpath_presence(self.driver, cfg_signin_button_xpath, screenshot_dir=self.screenshot_dir)
         e.click()
         logging.info(
             "- Logged in to the spinnaker instance at {}".format(cfg_spinnaker_url))
@@ -75,15 +75,15 @@ class Spinnaker():
     def get_application(self, appname):
         self.check_page_contains_error()
         e = wait_for_xpath_presence(
-            self.driver, cfg_applications_xpath, be_clickable=True)
+            self.driver, cfg_applications_xpath, be_clickable=True, screenshot_dir=self.screenshot_dir)
         e.click()
-        e = wait_for_xpath_presence(self.driver, cfg_searchbox_xpath)
+        e = wait_for_xpath_presence(self.driver, cfg_searchbox_xpath, screenshot_dir=self.screenshot_dir)
         e.send_keys(appname)
         e.send_keys(Keys.RETURN)
         time.sleep(1)
         self.save_screenshot("applications.png")
         app_xpath = "//a[contains (.,'" + appname + "')]"
-        e = wait_for_xpath_presence(self.driver, app_xpath)
+        e = wait_for_xpath_presence(self.driver, app_xpath, screenshot_dir=self.screenshot_dir)
         e.click()
         time.sleep(1)
         logging.info("- Searched for application: {}".format(appname))
@@ -92,7 +92,7 @@ class Spinnaker():
         self.get_application(appname)
         pipelines_xpath = "//a[@href='#/applications/" + \
             appname + "/executions']"
-        e = wait_for_xpath_presence(self.driver, pipelines_xpath)
+        e = wait_for_xpath_presence(self.driver, pipelines_xpath, screenshot_dir=self.screenshot_dir)
         e.click()
 
     def get_pipeline(self, appname, pipelinename):
@@ -101,12 +101,12 @@ class Spinnaker():
         time.sleep(0.5)
         checkbox = "//div[@class='nav']//execution-filters//label[contains(.,'  %s')]/input[@type='checkbox']" % pipelinename
         e = wait_for_xpath_presence(
-            self.driver, checkbox, be_clickable=True)
+            self.driver, checkbox, be_clickable=True, screenshot_dir=self.screenshot_dir)
         move_to_element(self.driver, e, click=True)
         time.sleep(2)
         if not e.get_attribute('checked'):
             e = wait_for_xpath_presence(
-                self.driver, checkbox, be_clickable=True)
+                self.driver, checkbox, be_clickable=True, screenshot_dir=self.screenshot_dir)
             e.click()
         time.sleep(2)
         self.save_screenshot("pipelines.png")
@@ -117,23 +117,23 @@ class Spinnaker():
         self.check_page_contains_error()
         # starts the 1st pipeline which is currently on the page
         e = wait_for_xpath_presence(
-            self.driver, cfg_start_manual_execution_xpath)
+            self.driver, cfg_start_manual_execution_xpath, screenshot_dir=self.screenshot_dir)
         click_stubborn(self.driver, e, cfg_start_manual_execution_xpath)
         time.sleep(2)
         if force_bake:
             e = wait_for_xpath_presence(
-                self.driver, cfg_force_rebake_xpath, be_clickable=True)
+                self.driver, cfg_force_rebake_xpath, be_clickable=True, screenshot_dir=self.screenshot_dir)
             move_to_element(self.driver, e, click=True)
             time.sleep(2)
             if not e.get_attribute('checked'):
                 e = wait_for_xpath_presence(
-                    self.driver, cfg_froce_rebake_xpath, be_clickable=True)
+                    self.driver, cfg_froce_rebake_xpath, be_clickable=True, screenshot_dir=self.screenshot_dir)
                 logging.info("Checking force bake option")
                 e.click()
             self.save_screenshot("force_bake_check.png")
 
         run_xpath = "//button[@type='submit' and contains(.,'Run')]/span[1]"
-        e = wait_for_xpath_presence(self.driver, run_xpath, be_clickable=True)
+        e = wait_for_xpath_presence(self.driver, run_xpath, be_clickable=True, screenshot_dir=self.screenshot_dir)
         e.click()
         time.sleep(2)
         start_time = time.time()
@@ -177,15 +177,15 @@ class Spinnaker():
 
     def get_last_build(self):
         execution_summary = wait_for_xpath_presence(
-            self.driver, cfg_execution_summary_xp)
+            self.driver, cfg_execution_summary_xp, screenshot_dir=self.screenshot_dir)
         execution_summary_text = execution_summary.text
 
         trigger_details = wait_for_xpath_presence(
-            self.driver, cfg_trigger_details_xp)
+            self.driver, cfg_trigger_details_xp, screenshot_dir=self.screenshot_dir)
         trigger_details_text = trigger_details.text
         self.build = Build(trigger_details_text, execution_summary_text)
         time.sleep(1)
-        e = wait_for_xpath_presence(self.driver, cfg_detail_xpath)
+        e = wait_for_xpath_presence(self.driver, cfg_detail_xpath, screenshot_dir=self.screenshot_dir)
         self.save_screenshot("last_build_status.png")
         return self.build
 
@@ -197,7 +197,7 @@ class Spinnaker():
             stage_xpath = "//execution-groups[1]//div[@class='stages']/div[" + str(
                 i) + "]"
             e = wait_for_xpath_presence(
-                self.driver, stage_xpath, be_clickable=True)
+                self.driver, stage_xpath, be_clickable=True, screenshot_dir=self.screenshot_dir)
             move_to_element(self.driver, e)
             e.click()
             alert_box_xps = ["//div[@class='alert alert-danger']",
