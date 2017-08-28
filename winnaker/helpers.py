@@ -62,12 +62,13 @@ def wait_for_xpath_presence(driver,
         be_clickable=False,
         exponential_multiplier=cfg_wait_exponential_multiplier,
         exponential_max=cfg_wait_exponential_max,
-        stop_max_attempt=cfg_retry_stop_max_attempt):
+        stop_max_attempt=cfg_retry_stop_max_attempt,
+        screenshot_dir=cfg_output_files_path):
     @retry(
         wait_exponential_multiplier=exponential_multiplier,
         wait_exponential_max=exponential_max,
         stop_max_attempt_number=stop_max_attempt)
-    def _wait_for_xpath_presence(driver, xpath, be_clickable):
+    def _wait_for_xpath_presence(driver, xpath, be_clickable, screenshot_dir):
         logging.debug("Waiting for XPATH: {}".format(xpath))
         wait = WebDriverWait(driver, 5)
         try:
@@ -82,7 +83,7 @@ def wait_for_xpath_presence(driver,
             logging.error("Error: Could not find {}".format(xpath))
             driver.save_screenshot(
                 join(
-                    cfg_output_files_path,
+                    screenshot_dir,
                     "debug_" +
                     now() +
                     ".png"))
@@ -91,7 +92,7 @@ def wait_for_xpath_presence(driver,
         except StaleElementReferenceException:
             driver.save_screenshot(
                 join(
-                    cfg_output_files_path,
+                    screenshot_dir,
                     "debug_" +
                     now() +
                     ".png"))
@@ -99,11 +100,11 @@ def wait_for_xpath_presence(driver,
             raise StaleElementReferenceException
         driver.save_screenshot(
             join(
-                cfg_output_files_path,
+                screenshot_dir,
                 "error_driver_" +
                 now() +
                 ".png"))
-    return _wait_for_xpath_presence(driver, xpath, be_clickable)
+    return _wait_for_xpath_presence(driver, xpath, be_clickable, screenshot_dir)
 
 def move_to_element(driver, e, click=False):
     from selenium.webdriver.common.action_chains import ActionChains
