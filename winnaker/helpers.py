@@ -87,7 +87,7 @@ def wait_for_xpath_presence(driver,
                     "debug_" +
                     now() +
                     ".png"))
-            a_nice_refresh(driver)
+            # a_nice_refresh(driver)
             raise TimeoutException
         except StaleElementReferenceException:
             driver.save_screenshot(
