@@ -99,7 +99,7 @@ class Spinnaker():
         self.check_page_contains_error()
         self.get_pipelines(appname)
         time.sleep(0.5)
-        checkbox = "//div[@class='nav']//execution-filters//label[contains(.,'  %s')]/input[@type='checkbox']" % pipelinename
+        checkbox = "//div[@class='nav']//execution-filters//label[contains(.,'%s')]/input[@type='checkbox']" % pipelinename
         e = wait_for_xpath_presence(
             self.driver, checkbox, be_clickable=True, screenshot_dir=self.screenshot_dir)
         move_to_element(self.driver, e, click=True)
